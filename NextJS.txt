@@ -572,11 +572,143 @@ function Home() {
 
 export default Home;
 
-src/layout.js
+src/app/layout.js
 export default function RootLayout(props) {
     return <html lang="en">
         <body>
             {props.children}
         </body>
     </html>
+}
+..........................................................................................................................................................
+
+.............................................................................................
+			  Nested Routing and Segments
+.............................................................................................
+
+G:\IBM\2025\Feb\NextJs>npx create-next-app@latest
+Need to install the following packages:
+create-next-app@15.1.7
+Ok to proceed? (y) y
+
+√ What is your project named? ... core-routing
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\Feb\NextJs\core-routing.
+
+Using npm.
+
+Initializing project with template: app-tw
+
+
+Installing dependencies:
+- react
+- react-dom
+- next
+
+...........................................................................................................................................................
+
+							Nested Folders and Routing
+..........................................................................................................................................................
+
+src/app/welcome/page.js
+
+export default function WelcomePage(){
+    return <h1>Welcome Page</h1>
+}
+
+http://localhost:3000/welcome -----> it will show page.js content of welcome/page.js
+
+src/app/about/page.js
+
+export default function About(){
+    return <h2>About</h2>
+}
+http://localhost:3000/about - it will show page.js and content of about/page.js
+
+Nested Layout:
+  
+src/app/layout.js - Root Layout.
+
+ Every Next app must have one single root layout.	
+
+src/app/welcome/layout.js  -Nested layout.
+//nested layout.
+
+export default function WelcomeLayout({ children }) {
+    return <div id="welcome layout">
+        {children}
+    </div>
+}
+
+Note:
+ inside nested folder, layout.js is optional but inside root folder layout.js is required
+ page.js is required for every folder.
+
+.............................................................................................................................................................
+				  Deep Nesting
+................................................................................................................................................................................................
+
+Dashboard:
+
+src/app/dashboard/layout.js
+export default function DashboardLayout({ children }) {
+    return <div id="dashboardLayout">
+        {children}
+    </div>
+}
+src/app/dashboard/page.js
+export default function Dashboard(){
+    return <h1>Dashboard Page</h1>
+}
+
+src/app/dashboard/settings/layout.js
+export default function SettingsLayout({ children }) {
+    return <div id="settingsLayout">
+        {children}
+    </div>
+}
+src/app/dashboard/settings/page.js
+export default function Settings() {
+    return <>
+        <h1> Settings</h1>
+    </>
+}
+
+src/app/dashboard/settings/password/layout.js
+export default function PasswordLayout({ children }) {
+    return <div id="passwordLayout">
+        {children}
+    </div>
+}
+
+src/app/dashboard/settings/password/page.js
+export default function Password(){
+    return <h2>Password Page</h2>
+}
+..............................................................................................................................................................
+		Folder is created what if the page.js is not created - not-found.js
+...............................................................................................................................................................
+eg:
+
+src/app/profile
+
+http://localhost:3000/profile
+
+404
+This page could not be found.
+
+if there is no page.js , then next will show the error page automatically which is mapped against not-found.js.
+
+if you dont want default error page and its content, then you can override "not-found.js"
+
+src/app/not-found.js
+export default function NotFound() {
+    return <h1>Oops,Something went Wrong</h1>
 }
