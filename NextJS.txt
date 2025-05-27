@@ -712,3 +712,281 @@ src/app/not-found.js
 export default function NotFound() {
     return <h1>Oops,Something went Wrong</h1>
 }
+
+............................................................................................
+				 template.js
+.............................................................................................
+
+layout.js and template.js are used to structure pages, that means both are same but they serve different purposes.
+
+src/products/layout.js
+sexport default function ProductsLayout({children}){
+    return <div  id="productsLayout">
+        {children}
+    </div>
+}
+
+src/products/page.js
+
+export default function Products(){ 
+    return <h1>Products Page</h1>
+}
+
+template.js:
+export default function ProductTemplate({ children }) {
+    return <div id="productTemplate">
+        {children}
+    </div>
+}
+
+layout:
+.......
+
+1.persistent ( permenant ) across navigation
+2.Used to wrap multiple pages under the same structure
+3.Statefull - maitains state between page transitions
+4.Only renders once per route segement.
+
+Template:
+
+1.Re-renders on every navigation
+2.Used when pages need fresh instances of UI.
+3.Stateless- does not persist state across transitions
+4.Works like layout.js but creates a new DOM structure every time.
+
+When to use layout and template?
+
+Use layout for global structures - headers, footers,sidebars
+Use template when pages need re-initalization on every navigation , which is best for Animations,Unique page Reloads.
+
+Template and Layout:
+   You can keep both template and layout together, but template is more dynamic where as layout is static.
+..........................................................................................................................................................
+						 Public Access Route
+................................................................................................................................................................................................
+if you have different name other than page.js, it will not be available for public access.
+
+app/settings/config.js
+
+http://localhost:3000/settings/config - It will throw error..
+
+....................................................................................................................................................................................................................................
+....................................................................................................................................................
+		 			Component Driven Archiecture
+....................................................................................................................................................
+
+Layout is container, Page is mapped against route segment, which displays UI.
+
+Can Page Hold other Components?
+
+    Layout
+          | 
+       Page
+            |
+ UserProfile
+     |
+    UserList
+      |
+      UserItem
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... next-components
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\next-components.
+
+Co-location:
+
+     In addition to special files, you have the option to colocate your own files (e.g. components, styles, tests, etc) inside folders in the app directory.
+
+src/app/profile/components/ProfileList.jsx
+
+export default function ProfileList(props){
+
+    return <ul>
+          {
+            props.data.map(profile=>{
+                return <li key={profile.id}>
+                    <span>{profile.name}</span>
+                </li>
+            })
+          }
+    </ul>
+}
+
+src/app/profile/components/Profile.jsx
+
+//import alises syntax from Next.js
+import { PROFILES } from "@/app/mock-data/profiles";
+// import { PROFILES } from "../../mock-data/profiles";
+// import ProfileList from "./ProfileList";
+import ProfileList from '@/app/profile/components/ProfileList'
+
+export function Profile() {
+    return <>
+        <ProfileList data={PROFILES} />
+    </>
+}
+
+src/app/profile/page.js
+// import { Profile } from "@/app/pcomponents/Profile"
+import { Profile } from '@/app/profile/components/Profile'
+
+export default function ProfilePage() {
+    return <div>
+        <Profile />
+    </div>
+}
+
+src/app/profile/layout.js
+
+export default function ProfileLayout({children}){
+    return <div>
+         {children}
+    </div>
+}
+.............................................................................................
+			     Component Types and Rendering Types
+.....................................................................................
+
+Rendering is nothing but page preparation (html creation).
+
+How to create html and where to create Html?
+
+Where:
+ rendering can take place in the server or on the client.
+
+When:
+  At Server side:
+   It can happen either ahead of time at build time.
+   or on every Request at runtime.
+
+With next js , two types of rendering methods are available.
+
+1.Server-side rendering
+   1.0. Request time
+   1.1. Static site Generation - build time
+   1.2. ISR - Incremental Static rendering - first Build time and later runtime.
+
+2.Client-side Rendering
+   Preparing portion of page at client side , which is similar to SPA Apps.
+
+Component types:
+ Based on Rendering, we can classify the component into two category.
+
+1.Server Component
+   Server components are rendered at server side
+2.Client components
+   Clients components are rendered at client side
+
+      By default all components are "Server Rendered Components"
+
+   page,layouts,templates,notfound,loading,default all are server components only
+
+Even When create custom components
+
+export default function Greet(props) {
+     return <>
+        <h1>{props.message}</h1>
+     </>
+}
+.....................................................................................
+			 	Client Component
+....................................................................................
+
+
+Generally React application is component driven....
+
+Component which may have logic to interact with user like button clicks,typing,animations,data fetch at client side,hooks, any dom manipulation......
+
+The components can be co-located..
+
+Client components allow us to write interactive UI that is prendered on the server and can use client javascript to run in the browser.
+
+Advantages of client Rendering:
+
+1.Interactivity
+   Client components uses "state,effects,event listener" , meaning they can provide immediate feedback to the user and update the UI.
+
+2.Browser APIs:
+    Client components have access the browser apis like Storage,geo location....
+
+
+
+src/app/review/components/review.jsx
+import { useState } from "react"
+
+const Review = props => {
+    const [like, setLike] = useState(0)
+    return <div>
+            <h1>Like {like}</h1>
+    </div>
+}
+export { Review }
+
+Ecmascript file had an error
+> 1 | import { useState } from "react"
+    |          ^^^^^^^^
+  2 |
+  3 | const Review = props => {
+  4 |     const [like, setLike] = useState(0)
+
+You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+
+Why this error?
+
+If any component having "hooks,listners,state",then it cant be compiled at server, now need to tell to the next js compiler, you have to compile or render this code in client side.
+
+How to tell?
+ we have to use a directive.
+
+Directive is instruction to the compiler.
+
+"use client" - directive
+
+eg:
+src/app/review/components/review.jsx
+
+'use client'
+
+import { useState } from "react"
+const Review = props => {
+    const [like, setLike] = useState(0)
+    return <div>
+        <h1>Like {like}</h1>
+        <button onClick={() => {
+            setLike(like + 1)
+        }}>+</button>
+    </div>
+}
+export { Review }
+
+src/app/review/page.js
+import { Review } from "./components/Review";
+
+export default function ReviewPage(){
+    return <div>
+        <Review/>
+    </div>
+}
+
+How to know the client component?
+
+if component has 
+
+1.useState hook
+2.Any listener
+3.useEffect hook
+4.Browser apis
+5.state declaration
+
+Task:
+  CURD operation using Array:
+...................................................................................................................................................
