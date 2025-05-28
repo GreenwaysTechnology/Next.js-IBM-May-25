@@ -580,8 +580,6 @@ export default function RootLayout(props) {
         </body>
     </html>
 }
-..........................................................................................................................................................
-
 .............................................................................................
 			  Nested Routing and Segments
 .............................................................................................
@@ -989,4 +987,367 @@ if component has
 
 Task:
   CURD operation using Array:
+
+
+eg:
+src/app/components/Post.jsx
+'use client'
+
+import { useState } from 'react'
+
+export const Post = props => {
+    //inital data with some sample posts
+    const [posts, setPosts] = useState([
+        { id: 1, title: 'Post 1', body: 'this is firstPost' },
+        { id: 2, title: 'Post 2', body: 'this is secondPost' }
+    ])
+    //To add new post into list
+    const [form, setForm] = useState({ title: '', body: '', id: null })
+
+    //to handle submit button either add or update
+    const [isEditing, setIsEditing] = useState(false)
+
+    //Form handler
+    const handleSubmit = (evt) => {
+        //call js event object method
+        evt.preventDefault()
+        isEditing ? updatePost() : addPost()
+
+    }
+    //functions
+    const updatePost = () => {
+        //array update
+        setPosts(posts.map(post => (post.id === form.id ? form : post)));
+        //reset form
+        setForm({ title: '', body: '', id: null })
+        //rest isEditing
+        setIsEditing(false)
+
+    }
+    const addPost = () => {
+        const newPost = { id: Date.now(), title: form.title, body: form.body }
+        //add new Item into array
+        setPosts([...posts, newPost])
+        //reset form
+        setForm({ title: '', body: '', id: null })
+    }
+    const handleEdit = post => {
+        console.log(post)
+        //load data from the list into form
+        setForm({ title: post.title, body: post.body, id: post.id })
+        setIsEditing(true)
+    }
+    const handleDelete = id => {
+        setPosts(posts.filter(post => post.id !== id))
+
+    }
+
+    {/* List of posts */ }
+    return <div>
+        {/* Add new Post */}
+        <form onSubmit={handleSubmit}>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Title"
+                    value={form.title}
+                    required
+                    onChange={e => setForm({ ...form, title: e.target.value })}
+                />
+            </div>
+            <div>
+                <textarea
+                    placeholder="Body"
+                    value={form.body}
+                    required
+                    onChange={e => setForm({ ...form, body: e.target.value })}
+                />
+            </div>
+            <div>
+                <button type="submit">{isEditing ? 'Update' : 'Add'} Post</button>
+            </div>
+        </form>
+        {/* Listing posts */}
+        <ul>
+            {
+                posts.map(post => {
+                    return <li key={post.id}>
+                        <h2>{post.title}</h2>
+                        <p>{post.body}</p>
+                        <button onClick={(evt) => {
+                            // Pass Individual Post object
+                            handleEdit(post)
+                        }}>Edit</button>
+                        <button onClick={(evt) => {
+                            handleDelete(post.id)
+                        }}>Delete</button>
+                    </li>
+                })
+            }
+        </ul>
+    </div>
+}
+
+src/app/posts/page.jsx
+
+import { Post } from "@/app/post/components/post"
+export default function PostsPage() {
+
+    return <div>
+        <Post />
+    </div>
+}
 ...................................................................................................................................................
+							..............................................................................................
+				Patterns for client and server components
+.............................................................................................
+
+1.Server component uses another Server Component
+   inside layout.js we use page.js
+   inside page.js we use about.jsx 
+
+2.Server component uses client component
+
+3.Client component uses another server component
+
+4.Client component uses another client component
+
+
+2.Server component uses client component
+
+Server:
+
+src/app/reviews/page.js
+import { Like } from './components/like'
+
+export default function ReviewPage() {
+    return <div>
+        <h1>Review Page</h1>
+        <Like />
+    </div>
+}
+
+Client:
+src/app/reviews/components/likes.jsx
+
+'use client'
+import { useState } from "react"
+export const Like = props => {
+    const [value, setValue] = useState(0)
+
+    const onLike = () => {
+        setValue(value + 1)
+    }
+    return <>
+        <h1>Like {value}</h1>
+        <button onClick={onLike}>Like</button>
+    </>
+}
+
+Note:
+ if server uses client, the client component must be marked with "use client" directive
+
+
+...........................................................
+		2.Client component uses another server component
+.........................................................................................................................................................
+
+//server component
+src/app/reviews/components/comments.jsx
+//server component
+export const Comments = ()=> {
+    return <>
+     <h1>Comments  Server Compoent</h1>
+    </>
+}
+
+//client component
+src/app/reviews/components/dislike.jsx
+
+
+'use client'
+
+import { useState } from "react"
+import { Comments } from "./comments"
+
+export const Dislike = ()=> {
+ const [value,setValue]= useState(0)
+ return <>
+     <h1>Dislike-Client Component</h1>
+      <h2>Value  {value}</h2>
+      {/* Server component */}
+      <Comments/>
+ </>
+
+}
+
+src/app/reviews/page.js
+import { Dislike } from './components/dislike'
+
+export default function ReviewPage() {
+    return <div>
+        <h1>Review Page</h1>
+        <Dislike/>
+    </div>
+}
+
+ if client uses another server component,"server component automatically becomes client component"
+
+                 When we use this pattern we loose server rendering.
+
+In the above code comments component runs in the client only.
+
+
+What if "client uses server component" but at the same time, i dont want to loose server rendering feature?
+
+Solution:
+
+  Pass Server Component as Prop to Child  component.
+
+Server:
+src/app/client/components/myserver.jsx
+export default function MyServer(){
+    return <>
+        <h1>Server Compoent</h1>
+    </>
+}
+
+Client
+src/app/client/components/myclient.jsx
+'use client'
+
+export const MyClient = (props) => {
+
+    return <div>
+        <h1>Client Component</h1>
+        {props.children}
+    </div>
+}
+
+
+Page
+src/app/client/page.js
+import { MyClient } from "./components/myclient";
+import MyServer from "./components/myserver";
+
+export default function ClientComponentPage(){
+    return <div>
+            <MyClient>
+                {/* Pass server as prop */}
+                <MyServer/>
+            </MyClient>
+    </div>
+}
+....................................................................................
+		3.Client Compoent uses another client Component
+.....................................................................................
+
+
+Page:
+src/app/counter/page.js
+import Counter from "./components/counter";
+
+export default function CounterPage(){
+    return <div>
+        <h1>Counter Page</h1>
+        <Counter/>
+    </div>
+}
+
+src/app/counter/counter.jsx
+
+'use client'
+
+import Increment from "./increment"
+
+export default function Counter() {
+
+    return <>
+        <h1>Counter Component</h1>
+        <Increment/>
+    </>
+}
+
+src/app/counter/increment.jsx
+
+
+'use client'
+import { useState } from "react"
+
+export default function Increment() {
+  const [value,setValue] = useState(0)
+    return <>
+        <h1>Increment Value {value}</h1>
+    </>
+}
+
+Note :
+
+If client component uses another client component, that another client component no need to use 'use client' directive.
+
+Note :
+
+If client component uses another client component, that another client component no need to use 'use client' directive.
+
+This would be very useful when we use thrid party ui components into next js
+.....................................................................................
+
+Eg:
+How to use react carbon lib
+
+Steps:
+
+1.npm install @carbon/react
+
+2.create client component
+
+src/app/clientcomponents/MyButton.jsx
+'use client'
+
+import { Button } from '@carbon/react';
+
+export function MyButton() {
+    return <>
+        <Button kind="danger">
+            Button
+        </Button>
+
+        <Button kind="danger--tertiary">
+            Tertiary Danger Button
+        </Button>
+
+        <Button kind="danger--ghost">
+            Ghost Danger Button
+        </Button>
+    </>
+}
+
+3.Use that client component inside another client component or server component
+
+import { Counter } from "./components/counter";
+import { MyButton } from "./components/MyButton";
+
+export default function CounterPage(){
+    return <div>
+        <Counter/>
+        <hr/>
+        <MyButton/>
+    </div>
+}
+
+Task:
+ Build simple shopping cart using client components
+
+Features
+1.Loads cart items from localStorage when page loads
+2.Add new Items to the cart dynamically
+3.Removes items with a delete button
+4.saves the cart back to the localStorage whenever it changes
+5.persist data even after page refresh.
+
+
+
+
+
+
+
