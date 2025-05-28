@@ -14,6 +14,7 @@ export default function NavBar() {
             <li><Link className={`${pathname === '/clients' ? 'active' : ''}`} href={{ pathname: '/clients' }}>Clients</Link></li>
             <li><Link className={`${pathname === '/dashboard' ? 'active' : ''}`} href={{ pathname: '/dashboard' }}>Dashboard</Link></li>
             <li><Link className={`${pathname === '/todos' ? 'active' : ''}`} href={{ pathname: '/todos' }}>Todos</Link></li>
+            <li><Link className={`${pathname === '/photos' ? 'active' : ''}`} href={{ pathname: '/photos' }}>Photos</Link></li>
 
         </ul>
     </nav>

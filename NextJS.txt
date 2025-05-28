@@ -1735,4 +1735,62 @@ export default async function TodosDetailsPage(props) {
 
     </div>
 }
-..................
+...................................................................................................................................................................
+Using Api:
+..........
+
+src/app/photos/page.js
+import Link from "next/link"
+
+//function to fetch data
+export async function fetchPhotos() {
+    try {
+        const url = 'https://jsonplaceholder.typicode.com/photos'
+        const response = await fetch(url)
+        const photos = await response.json()
+        return photos
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export default async function PhotosPage() {
+
+    const photos = await fetchPhotos()
+
+    return <>
+        <ul>
+            {
+                photos.map(photo => {
+                    return <li key={photo.id}>
+                        <Link href={`/photos/${photo.id}`}>{photo.title}</Link>
+                    </li>
+                })
+            }
+        </ul>
+    </>
+}
+
+src/app/photos/[id]/page.js
+
+export async function fetchPhotosById(id) {
+    const url = `https://jsonplaceholder.typicode.com/photos/${id}`
+    const response = await fetch(url)
+    const photo = await response.json()
+    return photo
+}
+
+export default async function PhotosDetailPage(props) {
+    const id = await props.params.id
+    const photo = await fetchPhotosById(Number(id))
+
+
+    return <div>
+        <h1>Photos Details Page</h1>
+        <h2>Photo Id :{photo.id} </h2>
+        <h3>AlbumId : {photo.albumId}</h3>
+        <p>{photo.title}</p>
+        <p>{photo.thumbnailUrl}</p>
+    </div>
+}
