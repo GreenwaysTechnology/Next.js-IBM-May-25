@@ -1648,7 +1648,6 @@ export default function DashboardPage(){
 }
 
 ..............................................................................................
-
 			Advanced Routes - Dynamic Routes
 
 What is Dynamic Route?
@@ -1794,3 +1793,364 @@ export default async function PhotosDetailPage(props) {
         <p>{photo.thumbnailUrl}</p>
     </div>
 }
+..........................................................................................................................................................
+				Styling-CSS,Fonts,Images
+
+CSS:
+1.Global CSS
+2.CSS Modules
+3.CSS Framworks
+  ->Tailwind framwork
+  ->bootstrap
+  ->SASS
+4.CSS in js
+
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... styling-app
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\styling-app.
+
+
+............................................................................................
+				Styling-CSS,Fonts,Images
+.............................................................................................
+
+CSS:
+1.Global CSS
+2.CSS Modules
+3.CSS Framworks
+  ->Tailwind framwork
+  ->bootstrap
+  ->SASS
+4.CSS in js
+
+Global css:
+ You can use global css to apply style across the application.
+
+To use global css,create a new css file, inside src/app/globals.css
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+you have to import in root layout /app/layout.js to apply styles to every route in the application.
+
+import "./globals.css";
+
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+      </body>
+    </html>
+  );
+}
+
+Tailwind css:
+.............
+
+if you want to integrate tailwind
+
+steps:
+1.you have to install tailwind
+
+ npm i  -D tailwindcss @tailwindcss/postcss postcss
+
+2.configure tailwind framework with next js app
+
+postcss.config.mjs
+
+const config = {
+  plugins: {
+    tailwindcss: {},
+  },
+};
+
+export default config;
+
+3.tailwind configuration
+tailwind.config.mjs
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
+  },
+  plugins: [],
+};
+.....
+
+4.integrate tailwind with globals.css
+
+@import 'tailwindcss'
+
+eg;
+Designing Simple Card layout:
+
+src/app/components/Card.jsx
+
+export function Card({ title, description }) {
+
+    return <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
+        <div className="px-6 py-4">
+            <div className="font-bold text-xl mb-2">{title}</div>
+            <p className="text-gray-700 text-base">{description}</p>
+        </div>
+    </div>
+}
+
+import { Card } from "./components/card"
+
+export default function Home() {
+  //card data
+  const cardData = [{
+    title: 'Card-1',
+    description: 'This is first card'
+  },
+  {
+    title: 'Card-2',
+    description: 'This is second card'
+  }, {
+    title: 'Card-3',
+    description: 'This is third card'
+  },
+  {
+    title: 'Card-3',
+    description: 'This is third card'
+  },
+  {
+    title: 'Card-3',
+    description: 'This is third card'
+  },
+  {
+    title: 'Card-3',
+    description: 'This is third card'
+  }
+  ]
+
+  return <div className="p-10">
+    <h1 className="text-3xl font-bold mb-6">Card Layout</h1>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        cardData.map((card, index) => {
+          return <Card key={index} title={card.title} description={card.description} />
+        })
+      }
+    </div>
+  </div>
+}
+.............................................................................................
+				CSS Modules
+...........................................................................................
+Module Name:
+
+YourName.module.css
+
+eg:
+
+src/app/profile/profile.module.css
+.profile {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profileImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    object-fit: cover;
+}
+
+.name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+
+}
+
+.bio {
+    font-size: 1rem;
+    color: #4a5566;
+    line-height: 1.5;
+
+}
+
+src/app/profile/components/Profile.jsx
+import styles from '../profile.module.css'
+
+export function Profile({ name, bio, imageUrl }) {
+    console.log(styles)
+    return <div className={styles.profile}>
+        <h1 className={styles.name}>{name}</h1>
+        <p className={styles.bio}>{bio}</p>
+    </div>
+}
+
+src/app/profile/page.js
+import { Profile } from "./components/Profile";
+
+export default function ProfilePage() {
+    const profile = {
+        name: 'Subramanian Murugan',
+        bio: 'Next.js Trainer | Micro services Consultant | Open Source Contributor'
+    }
+    return <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <Profile name={profile.name} bio={profile.bio} />
+        <Profile name={profile.name} bio={profile.bio} />
+        <Profile name={profile.name} bio={profile.bio} />
+    </div>
+}
+.............................................................................................
+				External Stylesheets
+.............................................................................................
+
+Steps:
+1.install bootstrap
+   npm i -D bootstrap
+2.import in the root layout
+
+src/app/layout.js
+
+import 'bootstrap/dist/css/bootstrap.css'
+
+..............................................................................................
+			      Image Handling
+............................................................................................
+
+Next.js comes with automatic image optimization for better performance and user experiences.
+
+How to handle static assets?
+
+You can store all static assets such as images,fonts,docments under public folder in the root directory
+
+if you are going to access any static assets inside code , you can use "/".
+
+Image: 
+ Next.js provides Image component which extends HTML <img> element.
+
+How to use Image component?
+
+ next/image package 
+
+<Image src="" alt="">
+
+src property can point local image or remote image.
+
+How to use local image?
+
+public/nature.png
+import Image from "next/image"
+
+export default function Nature(){
+    return <div>
+        <Image src="/nature.png" alt="Picture of  Nature" width={500} height={500}/ >
+    </div>
+}
+
+
+How to handle Remote Images?
+
+import Image from "next/image"
+
+export default function Nature() {
+    return <div>
+        {/* Remote Image */}
+        <Image src="https://via.placeholder.com/150/d32776" alt="Picture of something" width={500} height={500} />
+    </div>
+}
+
+After adding, you will get compile time error
+
+Error: Invalid src prop (https://via.placeholder.com/150/d32776) on `next/image`, hostname "via.placeholder.com" is not configured under images in your `next.config.js`
+See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
+
+if you are accessing remote images, you must configure the location in next.config.mjs
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    images: {
+        remotePatterns: [new URL('https://fakestoreapi.com/img/**')],
+    }
+};
+
+export default nextConfig;
+
+..............................................................................................
+				Fonts
+.............................................................................................
+
+By default Next js supports google fonts.
+
+import { Inter } from "next/font/google";
+import "./globals.css";
+
+//inter font configuration
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "Create Next App",
+  description: "Generated by create next app",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  );
+}
+Task:
+ You have to build master details page
+
+ Master page must have card layout.
+
+ Detail page must have full information with layouts.
+
+Data Url:
+https://fakestoreapi.com/products
+
+1.Using css with proper layouts.
+
