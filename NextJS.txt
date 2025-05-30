@@ -2328,7 +2328,7 @@ We have third party lib which internally wraps fetch only with caching features
 		       Data Fetching in Client Components using SWR API
 .....................................................................................
 
-what is SWR?
+What is SWR?
  The name “SWR” is derived from stale-while-revalidate, a HTTP cache invalidation strategy popularized by HTTP RFC 5861. SWR is a strategy to first return the data from cache (stale), then send the fetch request (revalidate), and finally come with the up-to-date data.
 
 SWR is wrapper for fetch api only.
@@ -2382,7 +2382,7 @@ export default function PostPage(){
     </div>
 }
 .........................................................................................................................................................
-	                         Data fetching using Route Handler
+	                            Data fetching using Route Handler
 	 	               (Rest api development and Integregation)
 ........................................................................................................................................................
 
@@ -2676,5 +2676,856 @@ export default async function CommentsPage() {
         </div>
     </div>
 }
+............................................................................................................................................................
+							.....................................................................................
+					Database Integration
+....................................................................................
+Next js can integrate with any data base including sql (mysql,oracle,postgresql) and no sql (mongo,neodb,redis)
+
+In order to talk to databases, application uses database drivers and apis....
+
+Mostly we use using database frameworks called "ORM- Object Relational Mapping" Framework..
+
+For Node js, We have many frameworks...
+
+1.Prisma
+2.Sequelize
+3.Type ORM
+etc...
+
+In order to work database, we need few things
+
+1.database  - mysql or mssql, or mongo database.
+
+How to setup database?
+
+ 1.download database and you have to install
+      https://www.postgresql.org/download/windows/
+ 2.via docker
+  
+Now a days no body , installing databases directly into machine, rather, we can install via docker.
+
+For training purposes we are going to use "immemory database". You dont need to install database manually either directly or via docker.
+
+In-Memory Databases:
+1.sqlite
+
+2.Database drivers
+ It is set of js programs to connect with databases, and sending sql statements.
+
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+Need to install the following packages:
+create-next-app@15.3.3
+Ok to proceed? (y) y
+
+√ What is your project named? ... db-app
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\db-app.
+
+	.....................................................................................
+					Database Integration
+....................................................................................
+Next js can integrate with any data base including sql (mysql,oracle,postgresql) and no sql (mongo,neodb,redis)
+
+In order to talk to databases, application uses database drivers and apis....
+
+Mostly we use using database frameworks called "ORM- Object Relational Mapping" Framework..
+
+For Node js, We have many frameworks...
+
+1.Prisma
+2.Sequelize
+3.Type ORM
+etc...
+
+In order to work database, we need few things
+
+1.database  - mysql or mssql, or mongo database.
+
+How to setup database?
+
+ 1.download database and you have to install
+      https://www.postgresql.org/download/windows/
+ 2.via docker
+  
+Now a days no body , installing databases directly into machine, rather, we can install via docker.
+
+For training purposes we are going to use "immemory database". You dont need to install database manually either directly or via docker.
+
+In-Memory Databases:
+1.sqlite
+
+2.Database drivers
+ It is set of js programs to connect with databases, and sending sql statements.
 
 
+Steps:
+1.create project
+
+G:\IBM\2025\Feb\NextJs>npx create-next-app@latest
+√ What is your project named? ... db-app
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\Feb\NextJs\db-app.
+
+
+Step 2: Install Prisma framework.
+
+Before installing prisma framework, we have to decide what database we are going to use.
+If you are going to use postgre sql database, then postgresql database must have been installed.
+
+How to install database?  any database
+
+1.download database like postgres
+2.install locally
+
+In modern days, we never download database and install, then how to download and install.
+
+Via container technologies like "Docker".
+
+Now i am going to use "inMemory"  database we dont even need docker....
+
+Note:
+ In memory databases not for production, or not for real time apps, only for learning purpose...
+
+In Memory Databases:
+1.sqllite.
+2.H2
+etc...
+
+we are going to use sqlite database...
+
+Any database we need to install database dirvers for prisma.
+
+
+
+3.Install sqlite database driver
+
+G:\IBM\2025\Feb\NextJs\db-app>npx prisma init --datasource-provider sqlite
+Need to install the following packages:
+prisma@6.3.1
+Ok to proceed? (y) y
+
+
+✔ Your Prisma schema was created at prisma/schema.prisma
+  You can now open it in your favorite editor.
+
+warn You already have a .gitignore file. Don't forget to add `.env` in it to not commit any private information.
+
+Next steps:
+1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+2. Run npx prisma db pull to turn your database schema into a Prisma schema.
+3. Run npx prisma generate to generate the Prisma Client. You can then start querying your database.
+4. Tip: Explore how you can extend the ORM with scalable connection pooling, global caching, and real-time database events. Read: https://pris.ly/cli/beyond-orm
+
+More information in our documentation:
+https://pris.ly/d/getting-started
+
+After installing , you can find folder inside project
+
+projectRootDir/prisma/schema.prisma
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+ProjectRootDir/".env"
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+DATABASE_URL="file:./dev.db"
+
+....................................................................................
+			    ORM Fundamentals
+....................................................................................
+What is orm?
+Object Relational Mapping
+ |         |       |
+Entity RDBMS    Binding
+
+In Database programs, we use sql query for creating,inserting, updating, deleting
+
+In ORM World, SQL queries are abstracted by apis like save, findAll, findById, remove,update..
+
+Entity Represents a "table" in the database.
+
+Schema :
+  The plan or structure
+
+Define Model (Enity)
+
+model User {
+
+}
+model Product {
+
+}
+
+Fields:
+ Fields are mapped in the table as columns
+
+Syntax:
+
+model ModelName { 
+ fieldName Type attributes
+}
+
+model Comment{
+ id Int @id @default(autoincrement())
+ title String
+ content String
+}
+
+id -  column Name(field)
+Int - Datatype
+@id -  attribute - Primiary Key
+@default - attribute- what is value we are going to assign to primary key
+autoincrement - function which generates values...
+
+Where to define this model?
+
+prisma/schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// We have to define model
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+Generate tables inside database and create sql quries:
+
+G:\IBM\2025\Feb\NextJs\db-app>npx prisma migrate dev --name init
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+SQLite database dev.db created at file:./dev.db
+
+Applying migration `20250217072911_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20250217072911_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+Running generate... (Use --skip-generate to skip the generators)
+
+✔ Generated Prisma Client (v6.3.1) to .\node_modules\@prisma\client in 46ms
+
+AFter running this step, you can see the table structure
+
+
+migrations/
+  └─ 20240311072557_init/
+    └─ migration.sql
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "role" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+Testing whether database tables are created or not
+npx prisma studio
+
+
+.....................................................................................
+				Prisma Client api
+.....................................................................................
+Prisma Client api is used to talk database from rest apis.
+
+src/lib/prisma.js
+//Prisma client api 
+import { PrismaClient } from "@prisma/client";
+const globalForPrisma = global
+export const prisma = globalForPrisma.prisma || new PrismaClient({ log: ["query"] })
+.....................................................................................						REST API with Prisma
+................................................................................
+
+src/app/api/users/route.js
+
+
+
+//write rest api which talks to database via prisma client
+
+import { prisma } from "@/app/lib/prisma";
+import { NextResponse } from "next/server";
+
+
+export async function GET(request) {
+    //connect to prisma 
+    const users = await prisma.user.findMany()
+    return NextResponse.json(users)
+}
+
+// create
+export async function POST(request) {
+    try {
+        const user = await request.json()
+        const response = await prisma.user.create({
+            data: user
+        })
+        return new NextResponse(JSON.stringify(response), {
+            status: 201,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
+    catch (err) {
+        return NextResponse.json(err)
+    }
+}
+
+findById,update,delete
+
+src/app/api/users/[id]/route.js
+import { prisma } from "@/app/lib/prisma"
+import { NextResponse } from "next/server"
+
+export async function GET(request, { params }) {
+    try {
+        const id = (await params).id
+        const users = await prisma.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+        if (!users) {
+            return NextResponse.json({ message: "UserNot Found", code: 404 })
+        }
+        return NextResponse.json(users)
+    }
+    catch (err) {
+        return NextResponse.json(err)
+    }
+
+}
+
+//update
+export async function PUT(request, { params }) {
+    try {
+        const id = (await params).id
+        const payload = await request.json()
+        const user = await prisma.user.update({
+            where: {
+                id
+            },
+            data: payload
+        })
+        if (!user) {
+            return NextResponse.json({ message: `No user found with ${id}`, code: 404 })
+        }
+        return NextResponse.json(user)
+    }
+    catch (err) {
+        return NextResponse.json(err)
+
+    }
+}
+
+//remove
+export async function DELETE(request, { params }) {
+    try {
+        const id = (await params).id
+        await prisma.user.delete({
+            where: {
+                id
+            }
+        })
+        return new NextResponse(null, { status: 404 })
+    }
+    catch (err) {
+        return NextResponse.json(err)
+
+
+    }
+}
+............................................................................................
+			Data base integration with User interface
+...........................................................................................
+
+export default async function UsersPage() {
+    const users = await getUsers()
+    return <main>
+        <ul>
+            {
+                users.map(user => {
+                    return <li>
+                        <span>{user.id} -  {user.name}</span>
+                    </li>
+                })
+            }
+        </ul>
+    </main>
+
+}
+
+CURD:
+
+
+src/app/users/components/users.jsx
+
+'use client'
+import { useState, useEffect } from 'react';
+
+export function User() {
+    const [users, setUsers] = useState([]);
+    const [formData, setFormData] = useState({ id: '', name: '', email: '', role: '' });
+    const [isEditing, setIsEditing] = useState(false);
+
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/users')
+            .then((res) => res.json())
+            .then((data) => setUsers(data));
+    }, []);
+
+
+    const handleEdit = (user) => {
+        setFormData(user);
+        setIsEditing(true);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (isEditing) {
+            // Update user
+            const res = await fetch(`http://localhost:3000/api/users/${formData.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: formData.name, email: formData.email, role: formData.role }),
+            });
+
+            if (res.ok) {
+                const updatedUser = await res.json();
+                setUsers((prev) => prev.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
+            }
+            setIsEditing(false);
+        } else {
+            // Create new user
+            const res = await fetch('http://localhost:3000/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: formData.name, email: formData.email, role: formData.role }),
+            });
+
+            if (res.ok) {
+                const newUser = await res.json();
+                setUsers((prev) => [...prev, newUser]);
+            }
+        }
+
+        setFormData({ id: '', name: '', email: '', role: '' });
+    };
+    const handleDelete = async (id) => {
+        const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (res.ok) {
+            setUsers((prev) => prev.filter((user) => user.id !== id));
+        }
+    };
+
+    return (
+        <div>
+            <h1 style={{textAlign:'center',fontSize:'35px'}}>User Management</h1>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                    />
+                </div>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Role"
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    required
+                />
+                <button type="submit">{isEditing ? 'Update User' : 'Add User'}</button>
+            </form>
+            <ul>
+                {users.map((user) => (
+                    <li key={user.id}>
+                        <div className="user-details">
+                            <span>
+                                {user.name} ({user.email}) - {user.role}
+                            </span>
+                        </div>
+                        <div className="actions">
+                            <button onClick={() => handleEdit(user)}>Edit</button>
+                            <button onClick={() => handleDelete(user.id)}>Delete</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+        </div>
+    );
+}
+src/users/page.js
+import { Users } from "./components/users";
+
+export default function UsersPage(){
+
+    return <Users/>
+}
+
+global.css
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  margin: 100px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+form {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form input {
+  width: calc(100% - 20px);
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #005bb5;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+li {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+li .user-details {
+  flex-grow: 1; /* Allow the user details to take all available space */
+}
+
+li .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Ensure buttons are aligned to the right */
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #d32f2f;
+}
+
+button:first-of-type {
+  background-color: #4caf50;
+}
+
+button:first-of-type:hover {
+  background-color: #388e3c;
+}
+............................................................................................
+...................................................................................
+					 Externalized configuration
+.....................................................................................
+
+In the above examples we have hard coded, urls what if i dont want to hard code
+
+const url = `http://localhost:3000/api/users`
+const url = `https://jsonplaceholder.typicode.com/todos`
+
+How to externalize the urls,database connection strings,global variables
+
+We have file called ".env" file
+
+Environment variables:
+  Next.js comes with built in support for env variables, which allows you to make your app more configurable, more flexiable.
+
+
+File Syntax:
+
+.env
+.env.enviroment
+
+environment would be 
+
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+
+How to load env variables?
+ ".env" variables are available into process.env
+
+projectRootDir/.env
+
+DATABASE_URL="file:./dev.db"
+POSTS_URL="https://jsonplaceholder.typicode.com/todos"
+
+
+export async function getUsers() {
+    // const url = `http://localhost:3000/api/users`
+    const url = `${process.env.USERS_URL}/users`
+    const response = await fetch(url)
+    return await response.json()
+}
+
+export async function getTodos() {
+    const todos = await fetch(`${process.env.POSTS_URL}`)
+    return todos.json()
+}
+export default async function TodosPage() {
+    const todos = await getTodos()
+    return <>
+        <div>
+            {todos.map(todo => {
+                return <section key={todo.id}>
+                    <h1>{todo.title}</h1>
+                </section>
+            })}
+        </div>
+    </>
+}
+
+If you are refering local rest api inside client components, you can refer using folder name
+eg:
+
+/api/users
+instead of
+http://localhost:3000/api/users
+
+'use client'
+import { useState, useEffect } from 'react';
+
+export function User() {
+    const [users, setUsers] = useState([]);
+    const [formData, setFormData] = useState({ id: '', name: '', email: '', role: '' });
+    const [isEditing, setIsEditing] = useState(false);
+
+
+    useEffect(() => {
+
+        // fetch('http://localhost:3000/api/users')
+        //     .then((res) => res.json())
+        //     .then((data) => setUsers(data));
+        fetch('/api/users')
+            .then((res) => res.json())
+            .then((data) => setUsers(data));
+    }, []);
+
+
+    const handleEdit = (user) => {
+        setFormData(user);
+        setIsEditing(true);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (isEditing) {
+            // Update user
+            const res = await fetch(`/api/users/${formData.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: formData.name, email: formData.email, role: formData.role }),
+            });
+
+            if (res.ok) {
+                const updatedUser = await res.json();
+                setUsers((prev) => prev.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
+            }
+            setIsEditing(false);
+        } else {
+            // Create new user
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: formData.name, email: formData.email, role: formData.role }),
+            });
+
+            if (res.ok) {
+                const newUser = await res.json();
+                setUsers((prev) => [...prev, newUser]);
+            }
+        }
+
+        setFormData({ id: '', name: '', email: '', role: '' });
+    };
+    const handleDelete = async (id) => {
+        const res = await fetch(`/api/users/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (res.ok) {
+            setUsers((prev) => prev.filter((user) => user.id !== id));
+        }
+    };
+
+    return (
+        <div>
+            <h1 style={{textAlign:'center',fontSize:'35px'}}>User Management</h1>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                    />
+                </div>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Role"
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    required
+                />
+                <button type="submit">{isEditing ? 'Update User' : 'Add User'}</button>
+            </form>
+            <ul>
+                {users.map((user) => (
+                    <li key={user.id}>
+                        <div className="user-details">
+                            <span>
+                                {user.name} ({user.email}) - {user.role}
+                            </span>
+                        </div>
+                        <div className="actions">
+                            <button onClick={() => handleEdit(user)}>Edit</button>
+                            <button onClick={() => handleDelete(user.id)}>Delete</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+        </div>
+    );
+}
