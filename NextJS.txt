@@ -3343,7 +3343,6 @@ button:first-of-type {
 button:first-of-type:hover {
   background-color: #388e3c;
 }
-............................................................................................
 ...................................................................................
 					 Externalized configuration
 .....................................................................................
@@ -3709,6 +3708,7 @@ There are many ways
 
 
 src/app/actions/userAction.js
+
 'use server'
 import { redirect } from "next/navigation"
 
@@ -3739,4 +3739,311 @@ export default function SuccessPage() {
     </div>
 }
 ............................................................................................................................................................
-					
+								...........................................................................................
+				Advanced Routing - Dynamic Routes
+			 	  "Catch All Segement Routing"
+.....................................................................................
+
+/todos/1
+  
+todos
+ |
+ [id]
+   |
+   page.js
+
+
+/shop ----> page.js
+
+/shop/a
+/shop/b
+/shop/c
+/shop/d
+
+shop
+ |
+ [a]
+   |
+   page.js
+ [b]
+   page.js
+ [c]
+   page.js
+
+shop/a/x
+shop/b/y
+
+What if dynamic routes are not predefined in advance...
+    This where catchAll dynamic routing segment comes into picture
+
+The "catchAll" segment is used to capture dynamic route segments that can handle any number of path segments in the URL. This is useful for routing in scenarios where the exact number of path segments is uncertain.
+
+Example: Blog Application
+
+Let's assume you are building a blog application, and you want to allow access to various types of blog posts, such as categories, authors, and specific post titles.
+
+Folder Structure:
+
+With Catch All:
+
+shop
+  |
+  page.js
+ [...slug]
+   |
+  page.js
+
+/shop/tops
+/shop/tops/tshirt
+/shop/dress/mens/shirt
+
+
+/app
+  /blog
+    /[...slug]
+
+In this structure, [...slug] is a dynamic catchAll route that can capture any path under /blog, whether it's /blog/technology/post-title or /blog/author/author-name.
+
+How to capture parameter?
+ {
+   slug:['tops','tshirt','dress','men','shirt']
+ }
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... catchall-routing
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\catchall-routing.
+
+Real-Time Use Cases:
+1.Dynamic Blog Categories: If you want different blog categories like technology, health, etc., you can dynamically display posts based on the slug[0] element.
+
+2.Post Filtering: If users access author or category paths, you can render the appropriate content based on the path structure.
+
+3.Flexible Routing: This method is highly flexible, as it supports any number of URL segments.
+
+This approach makes routing in Next.js scalable, especially when dealing with multiple dynamic segments that need to be handled uniformly.
+
+src/app/shop/page.js
+export default function ShopPage() {
+
+    return <h1>
+        Shop Page
+    </h1>
+}
+
+src/app/shop/[...slug]/page.js
+export default function ShopDetailPage({ params }) {
+
+    return <h1>
+        {JSON.stringify(params)}
+    </h1>
+}
+ ...................................................................................
+			     Advanced Routing - Dynamic Routes
+		   	    "Optional Catch All Segement Routing"
+.....................................................................................
+
+
+With Catch All:
+
+shop
+  |
+  page.js
+ [...slug]
+   |
+  page.js
+
+/shop/tops
+/shop/tops/tshirt
+/shop/dress/mens/shirt
+
+
+In CatchAll segement routing,the root folder has page.js, without that page.js what will happen?
+  You will get 404 - Page Not found
+
+http://localhost:3000/shop
+
+ There would be use case, i dont want page.js inside /shop 
+
+ Thats where we use "Optional CatchAll" segement is used
+
+With Optional CatchAll Segment:
+
+shop
+  |
+ [[...slug]] --optional CatchAll Segement...
+   |
+   page.js
+..................................................................................................................................................................
+..............................................................................................
+					Advanced Routing- Paralle Routing
+.....................................................................................
+
+What is Parallel Route?
+
+ Generally inside a layout, we render only one page by default.
+
+What if i want to render "Multiple Pages" inside single layout simultaneously or conditionally..
+
+"Parallel Routing allow yous to simultaneously or conditionally render one or more pages in the same layout.
+
+For highly section of an app, such as dashboards, and feeds on sites,Parellel routing can be used to implement complex routing patterns.
+
+Component View:
+
+ <Layout>
+    <Page/>
+ </Layout>
+
+Component View: Multiple Pages within a layout.
+
+<Layout>
+   <Page1/>
+   <Page2/>
+</Layout>
+
+Conditional Page Rendering:
+
+<Layout>
+   {condition ? <ThisPage/>:<ThatPage/>
+</Layout>
+
+
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... parallel-routing
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\parallel-routing.
+
+
+Basic App Structure:
+
+src/app
+   |
+  page.js
+  layout.js
+
+ info
+  |
+  page.js
+  layout.js
+
+Here only info page is inserted into layout
+ I want to display two different pages called "team" and "analytics" with in info layout.
+
+
+src/app/game/layout.js
+export default function GameLayout(props) {
+    return <div id="gameslayout">
+        {props.children}
+    </div>
+}
+
+src/app/game/page.js
+
+export default function GamePage(){
+
+    return <div>
+        <h1>Game Page</h1>
+    </div>
+}
+
+3.Parallel Routing, we have to folder with following syntax
+  @FolderName
+    |
+    layout.js
+    page.js
+
+ @folder is not available as public route like /folderName, this would be part of something else.
+
+Now if you test 
+
+http://localhost:3000/game/team
+
+   The out put would be pagenot found, the reason is if you cant access team page publicily, team page is part of something, that means, you must inject into game layout.
+
+How to inject?
+  via props
+
+insert team and analytics page content into game layout.
+
+export default function GameLayout(props) {
+    return <div id="gameslayout">
+        {/* Game Page content */}
+        {props.children}
+        {/* Team Page content */}
+        {props.team}
+        {/* Anaylitcs content */}
+        {props.anaylitics}
+    </div>
+}
+
+....................................................................................
+			     Advanced Routing
+		     Parallel Routing- Conditional Redering
+.....................................................................................
+
+As of now we have seen how to render mutiple pages into a layout.
+
+Now we are going to discuss how to render page or pages into a layout based on condition.
+
+Slot:
+  Portion of UI
+  slots are defined using named slots
+  Slots are defined with @folder Convention
+  For eg @team,@products,@services
+  Slots are passed as props to the shared parent layout.
+
+We render a slot based on UI on certain conditions such as checkbox, and options, authetication states.
+
+Syntax:
+@AdminPanel
+@UserPanel
+
+
+src/app/panel/page.js
+export default function Page(){
+    return <div>
+        <h1>Panel Page</h1>
+    </div>
+}
+
+src/app/panel/@AdminPanel/page.js
+
+export default function AdminPanel() {
+    return <div>
+        <h1>Admin</h1>
+    </div>
+}
+
+
+src/app/panel/@UserPanel/page.js
+
+export default function UserPanel() {
+    return <div>
+        <h1>User</h1>
+    </div>
+}
+
+src/app/panel/layout.js
+export default function PanelLayout(props) {
+    const isAdmin = false
+    return <div id="panelLayout">
+        {/* Panel Page */}
+        {props.children}
+        {/* Conditional Rendering */}
+        {isAdmin ? props.AdminPanel : props.UserPanel}
+    </div>
+}
