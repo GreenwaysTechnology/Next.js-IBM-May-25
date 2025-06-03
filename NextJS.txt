@@ -4842,4 +4842,139 @@ Through suspense we can enable streaming....
 2.Selective Hydration 
     React prioritizes what components to make interactive first based on user interaction.
 ............................................................................................................................................................
-						
+						    .............................................................................................
+				SEO Features
+............................................................................................
+
+Next js provides an object and function to supply SEO meta information to the page.
+
+SEO data can be given statically or dynamically.
+
+static meta data is given via code, one time
+
+dynamic meta is given via code during runtime.
+
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... seo-app
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+? What import alias would you like configured? » @/*
+
+src/app/layout.js
+export const metadata = {
+  title: "IBM",
+  description: "IBM is the first Hardware and software company in the world",
+  //add any meta data options
+};
+
+This above code is declarating meta data object having meta data information, this can be part of layout or page .
+
+if it is part of layout, it can be shared across many pages
+if it is part of page, it is only used by that page.
+
+Page specific meta data:
+
+src/app/about/page.js
+export const metadata = {
+    title: "About",
+    //add any meta data options
+};
+
+export default function About() {
+    return <h1>About</h1>
+}
+.............................................................................................
+				Master details and meta data
+			
+............................................................................................
+
+Master Page
+
+app/todos/page.js
+import Link from "next/link"
+
+export async function fetchTodos() {
+    const url = `https://jsonplaceholder.typicode.com/todos`
+    const response = await fetch(url)
+    return response.json()
+}
+
+export const metadata = {
+    title: "Todos Master",
+    //add any meta data options
+};
+
+
+export default async function TodosMasterPage() {
+    const todos = await fetchTodos()
+    return <div>
+        <h1>Total Todos {todos.length}</h1>
+        <ul>
+            {
+                todos.map(todo=>{
+                    return <li key={todo.id}>
+                        <Link href={`/todos/${todo.id}`}>{todo.title}</Link>
+                    </li>
+                })
+            }
+        </ul>
+    </div>
+}
+
+
+Dynamic meta data:
+
+app/todos/[id]/page.js
+
+export async function fetchTodos() {
+    const url = `https://jsonplaceholder.typicode.com/todos`
+    const response = await fetch(url)
+    return response.json()
+}
+export async function fetchTodosByid(id) {
+    const url = `https://jsonplaceholder.typicode.com/todos/${id}`
+    const response = await fetch(url)
+    return response.json()
+}
+
+export default async function TodoDetailPage(props) {
+    const todo = await fetchTodosByid(Number(props.params.id))
+    return <div>
+        <h2>id {todo.id}</h2>
+        <p>title {todo.title}</p>
+        <p>Status {todo.completed ? 'Ok' : 'Not Completed'}</p>
+    </div>
+}
+
+//dynamic meta data function
+export async function generateMetadata({ params, searchParam }, parent) {
+    const id = (await params).id
+    const todo = await fetchTodosByid(Number(id))
+
+    //return meta object
+    return {
+        title: `${todo.title} details`
+    }
+
+}
+
+//override funciton which is called during build time in order to prepare the page
+export async function generateStaticParams() {
+    const todos = await fetchTodos()
+    //generate html pages for all todos(200 todos), if you have 200 records, 200 html files
+    //to be generated
+
+    return todos.map(todo => {
+        //based on id only the pages are generated, id value must be string always.
+        let id = todo.id.toString()
+        return {
+            //id: id
+            id
+        }
+    });
+}
