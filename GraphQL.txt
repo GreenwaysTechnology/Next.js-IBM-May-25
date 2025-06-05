@@ -79,7 +79,7 @@ Modern api technologies:
 2.Grpc API
 3.Graphql API
 ....................................................................................
-			History of GraphQL or Why GraphQL
+				History of GraphQL or Why GraphQL
 ....................................................................................
 
 Rest spec is based on spec called REST spec
@@ -147,7 +147,7 @@ http
             <-------JSON/XML/PDF/etc....
 
 .....................................................................................	
- 	      Request and Response Model in GraphQL
+ 	      	Request and Response Model in GraphQL
 
 http
 POST   /graphql-----------> GraphQL server
@@ -175,7 +175,7 @@ Declarative Programming:
 
 What you write, you have to get the same structure.
 
-The Query request is more readable,declarative. WHich micics the javascript object literal syntax.
+The Query request is more readable, declarative.  Which  mimics the JavaScript object literal syntax.
 
 js object:
 
@@ -191,7 +191,7 @@ js object:
 GraphQL basic request structure
 
 GraphQL Request payload : GraphQL Query
-.......................................
+.............................................................
 
 GraphQL Client 
 
@@ -238,7 +238,7 @@ GraphQL uses only URL which exposes Service
      }
   } 
 
-Since we have only one end point, how to Identify the different operations like create,read,update,delete.
+Since we have only one end point, how to Identify the different operations like create, read ,update ,delete.
 
 Thats where graphql offers "client language called GraphQL Query language"........
 
@@ -257,28 +257,6 @@ Operation Types:
 query - a read only fetch
 mutation- a write followed by read
 subscription- a long live request that fetches data in response to source events
-....................................................................................
-....................................................................................
-                 GraphQL Query language specification
-.....................................................................................
-
-Concepts:
-
-=>Query encapsulation
-=>Query header
-=>Query api
-=>fields
-=>arguments
-=>aliases
-=>fragments
-=>variables
-=>directives
-=>mutations
-=>inline fragments
-
-if you want to learn query language we need api.
-i am going to use mock apis.
-
 ....................................................................................
                  GraphQL Query language specification
 .....................................................................................
@@ -309,3 +287,365 @@ Client tools:
  https://studio.apollographql.com/sandbox/explorer
 
 We are going to use "Apollo GraphQL" online tool.
+
+We are going to use "Apollographql" online tool.
+
+
+GraphQL query language has syntax:
+
+1.Selection Set
+
+  selectionSet  {Selection} => Query Encapsulation.
+
+selectionSet could be "query, mutation, subscription"
+
+ query  {Selection}
+  or
+ mutation  {Selection}
+  or
+ subscription  {Selection}
+
+Selection:
+
+ apiname (method)
+    returns
+     -fields
+     -fragment spread
+     -inline fragment
+
+syntax
+  api {
+    field1
+    fiedl2
+    field3
+  }
+
+Full eg with selection set
+
+query {
+ api {
+    field1
+    fiedl2  --------------------->Server------response-json
+    field3
+ }
+ }
+
+selection set is "query" - to read 
+api - name of the method
+fields means the data variables
+
+Operation and Selection Set
+
+//read =>GET
+query {
+person{
+  firstname
+  lastname
+  age
+ }
+}
+
+//Write
+mutation createUser(params){
+  createuser(params) {
+     id
+     name
+  }
+}
+//streaming
+subscription getPriceQuote(params) {
+ getPrice(params) {
+   price
+   name
+ }
+ 
+}
+................................................................................
+
+Use Case: Simple Query
+
+# Request
+query {
+  countries {
+    name
+  }
+}
+
+
+Response:
+{
+  "data": {
+    "countries": [
+      {
+    
+        "name": "Andorra"
+      },
+      {
+      
+        "name": "United Arab Emirates"
+      },
+      {
+        
+        "name": "Afghanistan"
+      },
+     
+    ]
+  }
+}
+.................
+
+More fields:
+............
+
+Use case :How to request more fields
+
+# Request
+query {
+  countries {
+    name
+    code 
+    capital
+    currency
+    emoji
+    
+  }
+}
+Response:
+
+{
+  "data": {
+    "countries": [
+      {
+        "name": "Andorra",
+        "code": "AD",
+        "capital": "Andorra la Vella",
+        "currency": "EUR",
+        "emoji": "🇦🇩"
+      },
+      {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "capital": "Abu Dhabi",
+        "currency": "AED",
+        "emoji": "🇦🇪"
+      },
+  ]
+ }
+}
+....................................................................................
+			    Query Syntax
+...................................................................................
+
+1.with query  keyword
+query {
+  countries {
+    name
+    code 
+    capital
+    currency
+    emoji
+    
+  }
+}
+2.without query keyword
+# Request
+{
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+  }
+}
+
+3.Query with "Header" - Query Header
+
+ Query header is just dummy name to idenfity the type of query.
+ This looks like "methodName",
+ Which can any name.
+
+# Request
+query GETCounterInfo {
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+  }
+}
+.....................................................................................
+			Nested Fields
+.....................................................................................
+
+REST:
+
+GET	/posts
+GET	/posts/1
+GET	/posts/1/comments
+
+Here comments is nested data structure.
+
+Use case: Query can ask nested data.
+
+# Request
+query GETCounteryInfo {
+  countries {
+    name
+    code
+    capital
+    currency
+    emoji
+    states {
+      code
+      name
+    }
+  }
+}
+Response:
+"data": {
+    "countries": [
+      {
+        "name": "Andorra",
+        "code": "AD",
+        "capital": "Andorra la Vella",
+        "currency": "EUR",
+        "emoji": "🇦🇩",
+        "states": []
+      },
+      {
+        "name": "United Arab Emirates",
+        "code": "AE",
+        "capital": "Abu Dhabi",
+        "currency": "AED",
+        "emoji": "🇦🇪",
+        "states": []
+      }
+   }
+}
+  ....................................................................................
+			Args and parameters
+.....................................................................................
+
+What if i want to get data based on some condition or conditions
+
+Parameters can be either hardcoded or dynamic parameter
+
+Syntax:
+query getUser { 
+     user(variableName:value) {
+	fields
+     }
+}
+
+Hardcoded or static parameter
+.............................
+eg:
+query CountryByCode {
+   country(code:"IN"){
+     capital
+     name
+     currency
+   }
+}
+
+Response:
+{
+  "data": {
+    "country": {
+      "capital": "New Delhi",
+      "name": "India",
+      "currency": "INR"
+    }
+  }
+}
+.....................................................................................	
+				  Dynamic parameters
+....................................................................................
+
+Variables:
+ Variables are place holder to have dynamic values which are passed from outside.
+in case of client app, you can pass via programs.
+
+How to use variables?
+  Variables are used with "$VariableName" convention.
+
+Steps:
+1.Declare variable with data type as part of the query header
+
+
+Syntax:
+ query queryHeader($variableName:DataType){
+    apiName(variableName:$variableName){
+     fields
+   }
+ }
+
+Data Types:
+ GraphQL provides language independent data types.
+
+Data Types:
+Scalar types(primitives)
+ ID
+ String
+ Float
+ Int
+ Enum
+ Boolean
+
+Complex Types(Object Types)
+ Objects-Customer,Country,Continent
+ Input- Special complex type-Primarily for passing complex input which is eq to dto
+
+EG:
+query CountryByCode($code:ID!) {
+   country(code:$code){
+     capital
+     name
+     currency
+   }
+}
+
+variables:
+{
+  "code": "US"
+}
+Response:
+{
+  "data": {
+    "country": {
+      "capital": "Washington D.C.",
+      "name": "United States",
+      "currency": "USD,USN,USS"
+    }
+  }
+}
+....................................................................................
+How to pass complex types or input types?
+
+query:
+query GETLANGUAGE_INFO($filter:LanguageFilterInput) {
+   languages(filter:$filter){
+     code 
+     name
+   }
+}
+variables:
+{
+  "filter": {
+    "code": {
+      "eq": "en"
+    }
+  }
+}
+{
+  "data": {
+    "languages": [
+      {
+        "code": "en",
+        "name": "English"
+      }
+    ]
+  }
+}
