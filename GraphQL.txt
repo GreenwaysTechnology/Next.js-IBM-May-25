@@ -649,3 +649,320 @@ variables:
     ]
   }
 }
+
+....................................................................................
+			Aliases
+...................................................................................
+
+incase if you want field name differently or if you think that some duplicate fields are coming.
+
+id - userId
+
+Field  aliases gives a dummy name for keys.
+
+
+without aliases:
+
+{
+ user(id:1){
+   id
+   name
+ }
+}
+
+Response:
+{
+ "data" : {
+   "user": {
+       "id":1,
+       "name:: "Subramanian"
+     }
+ }
+}
+With aliases:
+ {
+   subramanian:user(id:1){
+     id
+     name
+    }
+ }
+
+{
+ "data" : {
+   "subramanian": {
+       "id":1,
+        "name:: "Subramanian"
+     }
+ }
+}
+
+eg:
+query GETLANGUAGE_INFO($filter:LanguageFilterInput) {
+  mylang:languages(filter:$filter){
+     languagecode:code 
+     languageName:name
+   }
+}	
+variables:
+{
+  "filter": {
+    "code": {
+      "eq": "en"
+    }
+  }
+}
+Response:
+
+{
+  "data": {
+    "mylang": [
+      {
+        "languagecode": "en",
+        "languageName": "English"
+      }
+    ]
+  }
+}
+..................................................................................................................................................
+				Fragments
+.....................................................................................................................................................
+
+What if i have some fields, duplicated across many apis, in order to avoid duplicates fragments are used.
+
+Without Fragment
+Syntax:
+
+query {
+  user(id:2){
+   
+     friends {
+      id
+      name
+      pic
+     }
+    mutalfriends {
+      id
+      name
+      pic
+     }
+  }
+
+}
+ With Fragments:
+
+query {
+  user(id:2){
+   
+     friends {
+        ...friendsFields
+     }
+     mutalfriends {
+        ...friendsFields
+     }
+  }
+
+}
+framents friendsFields on User{
+      id
+      name
+      pic
+}
+
+eg:
+query countries {
+  countries {
+     ...CountryFields
+  }
+}
+fragment CountryFields on Country{
+  code
+  name
+}
+{
+  "data": {
+    "countries": [
+      {
+        "code": "AD",
+        "name": "Andorra"
+      },
+      {
+        "code": "AE",
+        "name": "United Arab Emirates"
+      }
+    ]
+ }
+....................................................................................
+			   Directives
+....................................................................................
+Directives are built in functions which provides some utilities.
+
+Syntax:
+   @directiveName(params)
+
+GraphQL supports two basic directives
+
+1.@include(if:boolean)
+2.@skip(if:boolean)
+  
+  These directives are used to include or exclude fields automatically.
+
+@include(if:Boolean)
+   only include "this field" in the result if the arg is true
+@skip(if:Boolean)
+   exclude /skip "this field" in the result if the arg is true.
+
+Syntax:
+
+query GetProfileHeader{
+    getProfile($id:Int,$withFriends:Boolean=false) {
+	profile(id:$id) {
+	   id
+           name
+	   friends @include(if:$withFriends)
+	
+        }
+
+    }
+}
+eg:
+query LanguageInfo($code: ID! = "en", $rtl: Boolean! = false) {
+  language(code: $code) {
+    name
+    native @include(if: $rtl)
+  }
+}
+
+with skip
+query LanguageInfo($code: ID! = "en", $rtl: Boolean! = false) {
+  language(code: $code) {
+    name
+    native @skip(if: $rtl)
+  }
+}
+
+variables:
+{
+  "code": "en",
+  "rtl": true,
+}
+Response:
+
+  "data": {
+    "language": {
+      "name": "English",
+      "native": "English"
+    }
+  }
+}
+.....................................................................................
+			      Mutation
+.....................................................................................
+
+How to send payload (data) to GraphQL api?
+
+create update delete
+
+IN REST
+
+HTTP VERB                   Convention in Server
+
+POST                          save
+
+DELETE			  remove
+
+PUT                           update
+
+In GraphQL there is only one end point ,only one URL
+
+
+HTTP VERB       GraphQL verb           Convention in Server
+
+POST             mutation                  save                   
+
+POST             mutation                  update
+
+POST             mutation                  remove
+
+POST             query                        read
+
+POST             subscription              read +Streaming
+                
+                   
+Testing:
+ 
+API url :
+
+https://graphqlzero.almansi.me/api
+                  
+create/insert
+
+mutation CREATEPOST($input:CreatePostInput!){
+  createPost(input:$input){
+     id 
+     title
+     body 
+  }
+}
+
+input:
+{
+  "input": {
+    "title": "Learn graphql",
+    "body": "Grapqhl is one the api technology"
+  }
+}
+Response:
+{
+  "data": {
+    "createPost": {
+      "id": "101",
+      "title": "Learn graphql",
+      "body": "Grapqhl is one the api technology"
+    }
+  }
+}
+
+UPDATE:
+........
+mutation UPDATEPOST($updatedPostId: ID!, $input: UpdatePostInput!) {
+  updatePost(id: $updatedPostId, input: $input) {
+    id
+    title
+    body
+  }
+}
+
+{
+  "updatedPostId": "1",
+  "input": {
+     "title":"Learn grpqhl with Apollo"
+  }
+}
+
+Response:
+{
+  "data": {
+    "updatePost": {
+      "id": "1",
+      "title": "Learn grpqhl with Apollo",
+      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    }
+  }
+}
+
+Delete:
+........
+mutation DELETEPOST($id:ID!){
+  deletePost(id: $id)
+}
+
+{
+  "id": "1"
+}
+
+Response:
+{
+  "data": {
+    "deletePost": true
+  }
+}
