@@ -1,57 +1,42 @@
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from '@apollo/server/standalone'
 
-//Mock users
-const USERS = [
-    {
-        id: 1,
-        firstName: "Subramanian",
-        lastName: "Murugan",
-        age: 10,
-        points: 100,
-        status: true
-    },
-    {
-        id: 2,
-        firstName: "Geetha",
-        lastName: "Subramanian",
-        age: 30,
-        points: 900,
-        status: true
-    },
-    {
-        id: 4,
-        firstName: "Hema",
-        lastName: "Chandran",
-        age: 30,
-        points: 900,
-        status: true
-    }
-
-]
-
 //define schema
 const typeDefs = `
     type User {
         id:ID!
-        firstName:String!
-        lastName:String!
+        name:String!
         status:Boolean
         age:Int
         points:Float
     }
     type Query {
-       users:[User!]!
+       user:User!
     }
 `
 //biz logic : resolvers
 const resolvers = {
     Query: {
-        users() {
-            return USERS 
+        user() {
+            // return {
+            //     id: 1,
+            //     name: 'Subramanian',
+            //     status: true,
+            //     age: 18,
+            //     points: 10.8
+            // }
+            // return {
+            //     status: true,
+            //     age:18,
+            //     points:10.8
+            // }
+            return null
         }
     },
+    // //Mutation
+    // Mutation : {
 
+    // }
 }
 
 //create appollo server
