@@ -1,0 +1,24 @@
+{
+  "books": [
+    {
+      "id": "1",
+      "title": "Graphql in Action",
+      "author": "a"
+    },
+    {
+      "id": "2",
+      "title": "Typescript in Action",
+      "author": "b"
+    },
+    {
+      "id": 45,
+      "title": "DGS framework",
+      "author": "Subramanian"
+    },
+    {
+      "id": 355,
+      "title": "NEXT JS",
+      "author": "Murugan"
+    }
+  ]
+}

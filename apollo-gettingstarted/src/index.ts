@@ -1,68 +1,85 @@
-import { ApolloServer } from "@apollo/server"
+import { RESTDataSource } from "@apollo/datasource-rest";
+import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from '@apollo/server/standalone'
 
-//Mock users
-const USERS = [
-    {
-        id: 1,
-        firstName: "Subramanian",
-        lastName: "Murugan",
-        age: 10,
-        points: 100,
-        status: true
-    },
-    {
-        id: 2,
-        firstName: "Geetha",
-        lastName: "Subramanian",
-        age: 30,
-        points: 900,
-        status: true
-    },
-    {
-        id: 4,
-        firstName: "Hema",
-        lastName: "Chandran",
-        age: 30,
-        points: 900,
-        status: true
+//Type class
+export class Book {
+    id: number;
+    title: string
+    author: string
+}
+//Data Source Class which talks Rest api
+export class BooksAPI extends RESTDataSource {
+    constructor() {
+        super()
+        this.baseURL = "http://localhost:3000/"
     }
-
-]
-
-//define schema
+    //apis
+    async getBooks() {
+        return this.get<Book[]>(`books`)
+    }
+    //save
+    async postBook(book: Book) {
+        return this.post<Book>(`books`, { body: book }).then(res => res)
+    }
+}
+//Define schema
 const typeDefs = `
-    type User {
-        id:ID!
-        firstName:String!
-        lastName:String!
-        status:Boolean
-        age:Int
-        points:Float
-    }
-    type Query {
-       users:[User!]!
-    }
-`
-//biz logic : resolvers
-const resolvers = {
-    Query: {
-        users() {
-            return USERS 
-        }
-    },
-
+type Book {
+    id:ID
+    title:String
+    author:String
+}
+type Query{
+   books:[Book]
 }
 
-//create appollo server
-const server = new ApolloServer({
+input BookInput {
+    id:Int
+    title:String!
+    author:String!
+}
+
+type Mutation {
+    addBook(input:BookInput):Book
+}   
+
+`
+const resolvers = {
+    //Query 
+    Query: {
+        books(parent, args, ctx) {
+            return ctx.dataSources.booksAPI.getBooks()
+        }
+    },
+    Mutation: {
+        async addBook(parent, args, ctx) {
+            const { input } = args;
+            return ctx.dataSources.booksAPI.postBook(input)
+        },
+    }
+}
+//context Type
+type MyContext = {
+    dataSources: {
+        booksAPI: BooksAPI
+    }
+}
+const server = new ApolloServer<MyContext>({
     typeDefs: typeDefs,
     resolvers: resolvers
 })
-//deploy it on Express web Container
+//Start the Webserver and deploy
 const { url } = await startStandaloneServer(server, {
     listen: {
         port: 4000
+    },
+    context: async () => {
+        return {
+            dataSources: {
+                booksAPI: new BooksAPI()
+            }
+        }
     }
 })
-console.log(`Apollo Server is Ready ${url}`)
+console.log(`Apollo Server is Started at ${url}`)
